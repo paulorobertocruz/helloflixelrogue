@@ -15,16 +15,12 @@ class Player extends FlxSprite{
     public function play_input(){
         //somente quando é sua jogada você pode mecher o personagem
         if(FlxG.keys.anyJustReleased(["LEFT","A"])){
-            //x -= width;
             FlxTween.tween(this,{x:this.x -this.width} ,0.05);
         }else if(FlxG.keys.anyJustReleased(["RIGHT","D"])){
-            //x += width;
             FlxTween.tween(this,{x:this.x +this.width} ,0.05);
         }else if(FlxG.keys.anyJustReleased(["UP","W"])){
-            //y -= height;
             FlxTween.tween(this,{y:this.y -this.width} ,0.05);
         }else if(FlxG.keys.anyJustReleased(["DOWN","S"])){
-            //y += height;
             FlxTween.tween(this,{y:this.y +this.width} ,0.05);
         }
     }
