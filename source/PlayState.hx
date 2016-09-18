@@ -43,6 +43,8 @@ class PlayState extends FlxState
 	//game objects
 	var exit:Exit;
 	var walls:FlxGroup;
+	var background:FlxGroup;
+	var outerwalls:FlxGroup;
 	var enemies:FlxGroup;
 	var food:FlxGroup;
 	var player:Player;
@@ -52,15 +54,33 @@ class PlayState extends FlxState
 		boardWidth = Std.int(FlxG.width/tileWidth);
 		boardHeight = Std.int(FlxG.height/tileHeight);
 
-		trace(boardWidth);
-		trace(boardHeight);
-
 		player = new Player(0, 0);
 		enemies = new FlxGroup();
+		background = new FlxGroup();
+		outerwalls = new FlxGroup();
 		walls = new FlxGroup();
 		food = new FlxGroup();
 		//saida da dangeon
 		exit = new Exit((boardWidth-2) * tileWidth, 1 * tileHeight);
+
+		//backgound
+		for( i in 1...boardWidth-1){
+			for( j in 1...boardHeight-1){
+				background.add(new Background(tileWidth * i, tileHeight * j));
+			}
+		}
+		add(background);
+
+		//parede mais externa
+		for(i in 0...boardWidth){
+			outerwalls.add(new OuterWall(i * tileWidth, 0));
+			outerwalls.add(new OuterWall(i * tileWidth, tileHeight * (boardHeight-1) ));
+		}
+		for(i in 1...boardHeight){
+			outerwalls.add(new OuterWall(0, i * tileHeight));
+			outerwalls.add(new OuterWall(tileWidth * (boardWidth-1), i * tileHeight));
+		}
+		add(outerwalls);
 
 		add(walls);
 		add(enemies);
@@ -75,11 +95,19 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float):Void
 	{
-		FlxG.collide(player, walls, collide_player_wall);
+		//colide com paredes
+		FlxG.collide(player, walls);
+		FlxG.collide(player, outerwalls);
+
+		//colide com a saida e vai para o proximo nivel(dia)
+		FlxG.collide(player, exit, function(p:Player, e:Exit):Void{
+			level += 1;
+			player.stop_tween();
+			loadLevel();
+		});
 
 		if(turn == Turn.Player){
 			player.play_input();
-
 		}else{
 			//
 		}
@@ -89,6 +117,15 @@ class PlayState extends FlxState
 	}
 
 	public function loadLevel():Void{
+		//reset level
+		walls.forEach( function(w):Void{
+			walls.remove(w);
+		});
+
+		//posiciona o jogador
+		trace("jogador");
+		player.x = tileWidth;
+		player.y = (boardHeight - 2) * tileHeight;
 
 		//place lugares disponiveis
 		var pontos:Array<FlxPoint> = new Array<FlxPoint>();
@@ -99,21 +136,19 @@ class PlayState extends FlxState
 			}
 		}
 
+		//coloca paredes
 		var qtdWalls:Int = FlxG.random.int(InterWalls.min, InterWalls.max);
-
 		while( qtdWalls > 0 ) {
 			qtdWalls -= 1;
-			trace("length: " + pontos.length);
 			var pointIndex:Int = FlxG.random.int(0, pontos.length - 1);
 			var currentPoint:FlxPoint = pontos[pointIndex];
 			walls.add(new Wall(currentPoint.x, currentPoint.y));
 			pontos.remove(currentPoint);
 		}
 
-		//place the player
-		player.x = tileWidth * 2;
-		player.y = tileHeight * 2;
-		//place walls
+		//coloca comida
+
+		//coloca inimigos
 
 
 	}
