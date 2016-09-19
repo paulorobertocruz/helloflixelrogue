@@ -152,9 +152,4 @@ class PlayState extends FlxState
 
 
 	}
-
-	public function collide_player_wall(p:Player, w:Wall):Void{
-		trace("collide p w");
-	}
-
 }
