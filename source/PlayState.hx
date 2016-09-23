@@ -122,8 +122,12 @@ class PlayState extends FlxState
 			walls.remove(w);
 		});
 
+		//remove todos os enemies
+		enemies.forEach( function(e):Void{
+			enemies.remove(e);
+		});
+
 		//posiciona o jogador
-		trace("jogador");
 		player.x = tileWidth;
 		player.y = (boardHeight - 2) * tileHeight;
 
@@ -136,19 +140,33 @@ class PlayState extends FlxState
 			}
 		}
 
-		//coloca paredes
+		//coloca paredes no level
 		var qtdWalls:Int = FlxG.random.int(InterWalls.min, InterWalls.max);
 		while( qtdWalls > 0 ) {
 			qtdWalls -= 1;
+			//pega um ponto de forma aleatoria
 			var pointIndex:Int = FlxG.random.int(0, pontos.length - 1);
 			var currentPoint:FlxPoint = pontos[pointIndex];
 			walls.add(new Wall(currentPoint.x, currentPoint.y));
+			//remove o ponto da lista de pontos disponiveis
 			pontos.remove(currentPoint);
 		}
 
 		//coloca comida
 
 		//coloca inimigos
+		var qtdEnemies:Int = FlxG.random.int(InterEnemies.min, InterEnemies.max);
+		while(qtdEnemies > 0){
+			qtdEnemies -= 1;
+			//pega um ponto de forma aleatoria
+			var pointIndex:Int = FlxG.random.int(0, pontos.length - 1);
+			var currentPoint:FlxPoint = pontos[pointIndex];
+			enemies.add(new Enemy(currentPoint.x, currentPoint.y));
+			//remove o ponto da lista de pontos disponiveis
+			pontos.remove(currentPoint);
+		}
+
+
 
 
 	}
