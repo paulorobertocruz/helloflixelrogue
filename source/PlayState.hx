@@ -29,7 +29,7 @@ enum Turn {
 
 class PlayState extends FlxState
 {
-
+	var hudDayText:FlxText;
 	var level:Int = 1;
 	var tileWidth:Int = 32;
 	var tileHeight:Int = 32;
@@ -54,6 +54,7 @@ class PlayState extends FlxState
 		boardWidth = Std.int(FlxG.width/tileWidth);
 		boardHeight = Std.int(FlxG.height/tileHeight);
 
+		hudDayText = new FlxText("Dia: "+ level);
 		player = new Player(0, 0);
 		enemies = new FlxGroup();
 		background = new FlxGroup();
@@ -87,7 +88,7 @@ class PlayState extends FlxState
 		add(exit);
 		add(player);
 		add(food);
-
+		add(hudDayText);
 
 		loadLevel();
 		super.create();
@@ -117,6 +118,8 @@ class PlayState extends FlxState
 	}
 
 	public function loadLevel():Void{
+		//set text
+		hudDayText.text = "Dia: "+ level;
 		//reset level
 		walls.forEach( function(w):Void{
 			walls.remove(w);
