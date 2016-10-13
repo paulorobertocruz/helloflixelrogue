@@ -29,7 +29,7 @@ class Player extends FlxSprite{
     }
 
     public function play_input(){
-        
+
         if(FlxG.keys.anyJustReleased(["LEFT","A"])){
           tween =  FlxTween.tween(this,{x:this.x -this.width} ,0.05);
           facing = FlxObject.LEFT;
@@ -75,7 +75,7 @@ class Player extends FlxSprite{
     }
 
     public function addFood(){
-      food += 2;
+      food += 3;
     }
 
     public function getFood():Int{
@@ -83,7 +83,7 @@ class Player extends FlxSprite{
     }
 
     public function atacado():Void{
-      food -= 10;
+      food -= 5;
     }
 
     public function atacar():Void{

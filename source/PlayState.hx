@@ -61,7 +61,6 @@ class PlayState extends FlxState
 		boardWidth = Std.int(FlxG.width/tileWidth);
 		boardHeight = Std.int(FlxG.height/tileHeight);
 
-		hudDayText = new FlxText("Dia: "+ level);
 		player = new Player(0, 0);
 		enemies = new FlxTypedGroup<Enemy>();
 		background = new FlxGroup();
@@ -95,7 +94,15 @@ class PlayState extends FlxState
 		add(exit);
 		add(player);
 		add(food);
+
+		hudDayText = new FlxText("Dia: "+ level);
+		hudDayText.x = FlxG.width/2 - (hudDayText.width/2);
+
+		hudFoodText = new FlxText("Food: "+ player.getFood());
+		hudFoodText.x = FlxG.width/2 - (hudFoodText.width/2);
+		hudFoodText.y = FlxG.height - hudFoodText.height+1;
 		add(hudDayText);
+		add(hudFoodText);
 
 		Enemy.player = player;
 		Enemy.walls = walls;
@@ -110,11 +117,11 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float):Void
 	{
+		hudFoodText.text = "Food: "+ player.getFood();
+
 		//colide com paredes
 		FlxG.collide(player, walls);
 		FlxG.collide(player, outerwalls);
-		// FlxG.collide(enemies, enemies);
-
 
 		//colide com a saida e vai para o proximo nivel(dia)
 		FlxG.collide(player, exit, function(p:Player, e:Exit):Void{
@@ -149,7 +156,11 @@ class PlayState extends FlxState
 				timer.destroy();
 				enemyPlayed = false;
 			});
+		}
 
+		//verifica game over
+		if(player.estaMorto()){
+			FlxG.switchState(new GameOverState());
 		}
 
 
@@ -157,8 +168,13 @@ class PlayState extends FlxState
 	}
 
 	public function loadLevel():Void{
+
+		turn = Turn.PlayerT;
+		playerTurn = playerTurnMax;
+
 		//set text
 		hudDayText.text = "Dia: "+ level;
+		hudFoodText.text = "Food: "+ player.getFood();
 		//reset level
 		walls.forEach( function(w):Void{
 			walls.remove(w);
